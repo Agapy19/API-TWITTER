@@ -1,11 +1,8 @@
 const express=  require ('express');
-
+const route = require ('./src/Routes/tweetRoute');
 const app = express();
 const port = 3002;
-
-app.get('/', function(req, res) {
-    res.send('hello world');
-});
+app.use('/tweet', route);
 
 // Ecout du port
 app.listen(port, () => console.log('mon application est demarrer sur: http://localhost:$(port)'));
