@@ -1,6 +1,6 @@
 
 const express = require('express');
-const Tweets = require('/home/user-15-c1/Documents/PROJET/API TWITTER/src/Models/tweetModel.js')
+const Tweets = require('/home/user-15-c1/Documents/PROJET/API TWITTER/src/Controlers/tweetControler.js')
 const router = express.Router()
 
 router.get("/", function (req, res) {
@@ -25,10 +25,14 @@ router.post("/", (req, res) => {
 
 });
 
-router.delete("/", function (req, res) {
+router.delete("/:id", function (req, res) {
+  const index = req.params.id
   const { userid, id, title, body, url, thumbnailUrl, likes, repost } = req.body;
-  Tweets.slice(id, 1);
-  res.status(201).json(Tweets);
+  const tweet={
+    userid, id, title, body, url, thumbnailUrl, likes, repost
+  }
+  Tweets.splice(index, 1);
+  res.status(202).json(Tweets);
 });
 
 
