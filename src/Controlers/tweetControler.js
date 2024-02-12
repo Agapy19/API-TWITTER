@@ -1,3 +1,4 @@
+const multer = require('multer')
 const Tweets = [
     {
         "userid": "1",
@@ -33,5 +34,41 @@ const Tweets = [
 
 ]
 
-
-module.exports = Tweets;
+const tweetControler= {
+    post:(req, res) => {
+        const { userid, id, title, body, url, thumbnailUrl, likes, repost } = req.body;
+        const tweet = {
+          "userid": userid,
+          "id": Tweets.length+1,
+          "title": title,
+          "body": body,
+          url: req.file.path,
+          "thumbnailUrl": thumbnailUrl,
+          "likes": likes,
+          "repost": repost
+        };
+        Tweets.push(tweet);
+        res.status(201).json(Tweets);
+      
+      },
+    delete: function (req, res) {
+        const index = req.params.id
+        const { userid, id, title, body, url, thumbnailUrl, likes, repost } = req.body;
+        const tweet = {
+          userid, id, title, body, url, thumbnailUrl, likes, repost
+        }
+        Tweets.splice(index, 1);
+        res.status(202).json(Tweets);
+      }
+}
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'src/Images')
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+  })
+  
+module.exports = {Tweets, tweetControler, storage};
