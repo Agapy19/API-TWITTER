@@ -8,10 +8,10 @@ const multer = require('multer')
 
 const upload = multer({ storage: storage })
 
-router.get("/", function (req, res) {
-  res.json(Tweets);
+// router.get("/", function (req, res) {
+//   res.json(Tweets);
 
-});
+// });
 
 router.post("/",upload.single('url'), tweetControler.post);
 
