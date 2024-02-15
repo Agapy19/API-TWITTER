@@ -1,20 +1,26 @@
 
-const Users = require('../Models/authModel.js');
 const jwt = require('jsonwebtoken');
-const authControler = {
-    post: (req, res) => {
-        const { name, password } = req.body
-        const valid = Users.some((user) => user.name === name && user.password === password)
-        const token = jwt.sign({name}, privateKey, {algorithm:'RS256'})
-        if (valid) {
-            res.send(valid)
-        }
-        else {
-            res.status(404).send("pas trouver")
-        }
+const authModel = require('../Models/authModel.js');
 
+const secretKey = '12345';
+
+async function login(req, res) {
+  const { email, password } = req.body;
+
+  try {
+    const user = await userModel.findUserByEmail(email);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-
+    const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
+    res.json({ token });
+  } catch (error) {
+    console.error('Erreur lors de la connexion :', error);
+    res.status(500).json({ message: 'Erreur lors de la connexion' });
+  }
 }
-module.exports = authControler;
+
+module.exports = {
+    login,
+  };
