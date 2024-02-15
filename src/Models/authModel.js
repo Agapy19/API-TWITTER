@@ -1,6 +1,5 @@
 const Users = [{
-    username: "Agapy",
-    email: "mafoagapy697@gmail.com",
+    name: "Agapy",
     passWord: 1902
 }]
 

@@ -1,20 +1,20 @@
 
 const Users = require('../Models/authModel.js');
+const jwt = require('jsonwebtoken');
 const authControler = {
- post:(req, res) => {
-    const{username, email, password} = req.body
+    post: (req, res) => {
+        const { name, password } = req.body
+        const valid = Users.some((user) => user.name === name && user.password === password)
+        const token = jwt.sign({name}, privateKey, {algorithm:'RS256'})
+        if (valid) {
+            res.send(valid)
+        }
+        else {
+            res.status(404).send("pas trouver")
+        }
 
-    const user = {
-        username:username,
-       email: email,
-        password: password
-       
-    };
+    }
 
-    Users.push(user);
-        res.status(201).json(Users);
- }
 
- 
 }
 module.exports = authControler;
