@@ -4,8 +4,10 @@ const authControler = require ('../Controlers/authControler.js');
 const authModel = require('../Models/authModel');
 
 
-router.post('/login', authControler.login);
-
+// Route de d'inscription
+router.post('/signup', authControler.signUp);
+// Route de connexion
+router.post('/signin', authControler.signIn);
 
 
 
