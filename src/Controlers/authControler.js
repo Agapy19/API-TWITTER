@@ -1,11 +1,9 @@
-
 const jwt = require('jsonwebtoken');
-const authModel = require('../Models/authModel.js');
+const User = require('../Models/authModel.js');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 
-
-const JWT_SECRET = 'votre_secret_jwt';
+const JWT_SECRET = process.env.JWT_SECRET || generateSecureKey();
 
 async function signUp(req, res) {
   const errors = validationResult(req);
@@ -15,12 +13,12 @@ async function signUp(req, res) {
 
   const { name, email, password } = req.body;
   try {
-    const user = await authModel.findUserByEmail(email);
+    const user = await User.findUserByEmail(email);
     if (user) {
       return res.status(400).json({ message: 'Cet utilisateur existe déjà' });
     }
 
-    await authModel.createUser(name, email, password);
+    await User.createUser(name, email, password);
     res.status(201).json({ message: 'Utilisateur créé avec succès' });
   } catch (error) {
     console.error(error);
@@ -31,7 +29,7 @@ async function signUp(req, res) {
 async function signIn(req, res) {
   const { email, password } = req.body;
   try {
-    const user = await authModel.findUserByEmail(email);
+    const user = await User.findUserByEmail(email);
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
@@ -41,7 +39,7 @@ async function signIn(req, res) {
       return res.status(401).json({ message: 'Mot de passe incorrect' });
     }
 
-    const accessToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET);
+    const accessToken = generateAccessToken(user.id, user.email);
     res.json({ accessToken });
   } catch (error) {
     console.error(error);
@@ -49,9 +47,16 @@ async function signIn(req, res) {
   }
 }
 
+function generateAccessToken(userId, userEmail) {
+  return jwt.sign({ id: userId, email: userEmail }, JWT_SECRET, { expiresIn: '1h' });
+}
+
+function generateSecureKey() {
+  const crypto = require('crypto');
+  return crypto.randomBytes(64).toString('hex');
+}
+
 module.exports = {
   signUp,
   signIn,
 };
-
-

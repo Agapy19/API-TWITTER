@@ -8,7 +8,6 @@ async function createUser(email, username, name, password) {
     return prisma.user.create({
       data: {
         email,
-        username,
         name,
         password: hashedPassword,
       },
@@ -22,19 +21,12 @@ async function findUserByEmail(email) {
     },
   });
 }
-async function findUserByUsername(username) {
-    return prisma.user.findUnique({
-      where: {
-        username,
-      },
-    });
-  }
+
 
 
 
 module.exports = {
   createUser,
-  findUserByUsername,
   findUserByEmail,
 };
 

@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  nom       String
+  name       String
   email     String   @unique
-  mot_de_passe String
+  password String
 }
